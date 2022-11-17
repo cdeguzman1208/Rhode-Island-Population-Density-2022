@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Meta Tag -->
+        <meta charset="utf-8">
+        
+        <title>D3 Geomap</title>
+        
+        <!-- CSS Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="geomapstylesheet.css">
+        
+        <!-- D3.js Source -->
+        <script type= "text/javascript" src="http://d3js.org/d3.v5.min.js"></script>
+    </head>
+    
+    <body>
+        <h1 style = "text-align:center; color:steelblue"><bold>Rhode Island Population Density, 2022</bold></h1>
+        
+        <!-- Your D3.js code for making a Chord Diagram -->
+        <script type="text/javascript" src="geomapmap.js"></script>
+        
+        <!-- a hidden div that gets populated with the data values for the tooltip -->
+        <div id="tooltip" class="hidden">
+            <div class='grid'>
+                <p class='left'>County</p>
+                <p class='center'>:</p>
+                <p class='right' id=name></p>
+            </div>
+            <div class='grid'>
+                <p class='left'>Population</p>
+                <p class='center'>:</p>
+                <p class='right' id=density></p>
+            </div>
+        </div>
+        
+        <!-- Submission Info -->
+        <h4>Submission Info:</h4>
+        <p>Created by Cromwell De Guzman</p>
+        <p>Suresh Lodha</p>
+        <p>CSE 163: Data Programming for Visualization</p>
+        <p>Fall 2022</p>
+        
+        <h4>Description:</h4>
+        <p>Shows the population density by county for the state of Rhode Island.</p>
+        
+        <h4>Files Submitted:</h4>
+        <ul>
+            <li>geomapindex.html</li>
+            <li>geomapmap.js</li>
+            <li>geomapstylesheet.css</li>
+            <li>geomaprhodeisland.pdf</li>
+        </ul>
+        
+        <h4>Sources:</h4>
+        <ul>
+            <li>Scott Murray - Interactive Data Visualization for the Web: An Introduction to Designing with D3</li>
+            <li>Camillol - Population-Density By County.csv</li>
+            <li>Mike Bostock - California Population Density</li>
+        </ul>
+    </body>
+</html>
