@@ -12,22 +12,25 @@ Tasks:
 
 // define margin
 var margin = {left: 80, right: 80, top: 50, bottom: 50 },
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width =  960 - margin.left - margin.right,
+    height = (200 + 500) - margin.top - margin.bottom;
 
 // define svg
 var svg = d3.select("body")
 .append("svg")
 .attr("width", width + margin.left + margin.right)
 .attr("height", height + margin.top + margin.bottom)
-.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+.call(d3.zoom().on('zoom', zoomed))
+.append('g');
 
-// define data values
-var density = d3.map();
-var name = d3.map();
+function zoomed() {
+	svg.attr('transform', d3.event.transform)
+}
 
 // define path
-var path = d3.geoPath();
+var path = d3.geoPath()
+.projection(null);
 
 // define color
 var color = d3.scaleThreshold()
@@ -72,46 +75,46 @@ g.append("text")
 g.call(d3.axisBottom(x)
     .tickSize(13)
     .tickValues(color.domain()))
-  .select(".domain")
+    .select(".domain")
     .remove();
 
-// draw geomap
-d3.json("topo.json", function(error, topology) {
-  if (error) throw error;
-
-  svg.append("g")
-    .selectAll("path")
-    .data(topojson.feature(topology, topology.objects.tracts).features)
-    .enter().append("path")
-      .attr("fill", function(d) { return color(d.properties.density); })
-      .attr("d", path);
-
-  svg.append("path")
-      .datum(topojson.feature(topology, topology.objects.counties))
-      .attr("fill", "none")
-      .attr("stroke", "#000")
-      .attr("stroke-opacity", 0.3)
-      .attr("d", path);
-});
-
-// helper function for reading in population density dataset
-function rowConverter(data) {
-    return {
-        geoID : data.geoID,
-        geoID2 : +data.geoID2,
-        state : data.geoDisplayLabel,
-        targetID : data.GCT_STUB_targetGeoID,
-        targetID2 : +data.GCT_STUB_targetGeoID2,
-        name : data.GCT_STUB_displayLabel,
-        density : +data.densityPerSquareMileOfLandArea
-    }
-}
-
-// display population density
-d3.csv("rhodeisland.csv",rowConverter).then(function(data) {
+d3.json('https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/ca-counties.json', function(error, california) {
+    if(error) throw error;
     
-    // check if actually reading in dataset correctly
-    dataset = data;
-    console.table(dataset, ["geoID", "geoID2", "state", "targetID", "targetID2", "name", "density"]);
+    svg.selectAll('path')
+        .data(topojson.feature(california, california.objects.counties).features)
+        .enter().append('path')
+        .attr('fill', function(d, i) {
+            return color(i);
+        })
+        .attr('class', 'land')
+        .attr('id', function(d, i) {
+            return california.objects.counties.geometries[i].name;
+        })
+        .attr('d', path)
+        .append('title')
+        .text(function(d,i) { return california.objects.counties.geometries[i].name + ' County'; });
     
+    svg.append('path')
+        .datum(topojson.mesh(california, california.objects.counties, function(a, b) { return a !== b; }))
+        .attr('class', 'boundry')
+        .attr('d', path);
+    
+    g.append("g")
+        .selectAll("path")
+        .on("mouseover", function(d) { // show tooltip
+            d3.select("#tooltip")
+                .select("#name")
+                .text(d.name.value);
+            d3.select("#tooltip")
+                .select("#density")
+                .text(d.density.value);
+            d3.select("#tooltip")
+                .style("left", (d3.event.pageX - 50) + "px")
+                .style("top", (d3.event.pageY - 50) + "px")
+                .classed("hidden", false);
+        })
+        .on("mouseout", function() { // hide tooltip
+            d3.select("#tooltip").classed("hidden", true);
+        })
 });
