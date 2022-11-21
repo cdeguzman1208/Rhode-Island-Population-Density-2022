@@ -81,40 +81,40 @@ g.call(d3.axisBottom(x)
 d3.json('https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/ca-counties.json', function(error, california) {
     if(error) throw error;
     
-    svg.selectAll('path')
-        .data(topojson.feature(california, california.objects.counties).features)
-        .enter().append('path')
-        .attr('fill', function(d, i) {
-            return color(i);
-        })
-        .attr('class', 'land')
-        .attr('id', function(d, i) {
-            return california.objects.counties.geometries[i].name;
-        })
-        .attr('d', path)
-        .append('title')
-        .text(function(d,i) { return california.objects.counties.geometries[i].name + ' County'; });
-    
-    svg.append('path')
-        .datum(topojson.mesh(california, california.objects.counties, function(a, b) { return a !== b; }))
-        .attr('class', 'boundry')
-        .attr('d', path);
-    
-    g.append("g")
-        .selectAll("path")
-        .on("mouseover", function(d) { // show tooltip
-            d3.select("#tooltip")
-                .select("#name")
-                .text(d.name.value);
-            d3.select("#tooltip")
-                .select("#density")
-                .text(d.density.value);
-            d3.select("#tooltip")
-                .style("left", (d3.event.pageX - 50) + "px")
-                .style("top", (d3.event.pageY - 50) + "px")
-                .classed("hidden", false);
-        })
-        .on("mouseout", function() { // hide tooltip
-            d3.select("#tooltip").classed("hidden", true);
-        })
+    d3.csv("rhodeisland.csv", (d) => {
+        console.log(d)
+        
+        svg.selectAll('path')
+            .data(topojson.feature(california, california.objects.counties).features)
+            .enter().append('path')
+            .attr('fill', function(d, i) { return color(i); })
+            .attr('class', 'land')
+            .attr('id', function(d, i) { return california.objects.counties.geometries[i].name; })
+            .attr('d', path)
+            .append('title')
+            .text(function(d,i) { return california.objects.counties.geometries[i].name + ' County'; });
+        
+        svg.append('path')
+            .datum(topojson.mesh(california, california.objects.counties, function(a, b) { return a !== b; }))
+            .attr('class', 'boundry')
+            .attr('d', path);
+        
+        g.append("g")
+            .selectAll("path")
+            .on("mouseover", function(d) { // show tooltip
+                d3.select("#tooltip")
+                    .select("#GCT_STUB_displayLabel")
+                    .text(d.GCT_STUB_displayLabel.value);
+                d3.select("#tooltip")
+                    .select("#densityPerSquareMileOfLandArea")
+                    .text(d.densityPerSquareMileOfLandArea.value);
+                d3.select("#tooltip")
+                    .style("left", (d3.event.pageX - 50) + "px")
+                    .style("top", (d3.event.pageY - 50) + "px")
+                    .classed("hidden", false);
+            })
+            .on("mouseout", function() { // hide tooltip
+                d3.select("#tooltip").classed("hidden", true);
+            })
+    });
 });
