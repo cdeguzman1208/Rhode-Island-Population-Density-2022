@@ -40,3 +40,15 @@ body {
     font-size: 16px;
     line-height: 20px;
 }
+
+.boundry {
+	fill: none;
+	stroke: #fff;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	vector-effect: non-scaling-stroke;
+}
+
+.land:hover {
+	fill: white;
+}
