@@ -78,12 +78,15 @@ g.call(d3.axisBottom(x)
     .select(".domain")
     .remove();
 
+// draw geomap
 d3.json('https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/ca-counties.json', function(error, california) {
     if(error) throw error;
     
+    // read in population density dataset
     d3.csv("rhodeisland.csv", (d) => {
         console.log(d)
         
+        // draw counties and borders
         svg.selectAll('path')
             .data(topojson.feature(california, california.objects.counties).features)
             .enter().append('path')
@@ -93,15 +96,15 @@ d3.json('https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/ca-counties.json', f
             .attr('d', path)
             .append('title')
             .text(function(d,i) { return california.objects.counties.geometries[i].name + ' County'; });
-        
         svg.append('path')
             .datum(topojson.mesh(california, california.objects.counties, function(a, b) { return a !== b; }))
             .attr('class', 'boundry')
             .attr('d', path);
         
+        // show tooltip
         g.append("g")
             .selectAll("path")
-            .on("mouseover", function(d) { // show tooltip
+            .on("mouseover", function(d) {
                 d3.select("#tooltip")
                     .select("#GCT_STUB_displayLabel")
                     .text(d.GCT_STUB_displayLabel.value);
@@ -113,7 +116,9 @@ d3.json('https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/ca-counties.json', f
                     .style("top", (d3.event.pageY - 50) + "px")
                     .classed("hidden", false);
             })
-            .on("mouseout", function() { // hide tooltip
+        
+            // hide tooltip
+            .on("mouseout", function() {
                 d3.select("#tooltip").classed("hidden", true);
             })
     });
