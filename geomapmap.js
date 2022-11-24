@@ -79,7 +79,7 @@ g.call(d3.axisBottom(x)
     .remove();
 
 // draw geomap
-d3.json('https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/ca-counties.json', function(error, california) {
+d3.json('ri-counties.json', function(error, rhodeisland) {
     if(error) throw error;
     
     // read in population density dataset
@@ -88,16 +88,16 @@ d3.json('https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/ca-counties.json', f
         
         // draw counties and borders
         svg.selectAll('path')
-            .data(topojson.feature(california, california.objects.counties).features)
+            .data(topojson.feature(rhodeisland, rhodeisland.objects.counties).features)
             .enter().append('path')
             .attr('fill', function(d, i) { return color(i); })
             .attr('class', 'land')
-            .attr('id', function(d, i) { return california.objects.counties.geometries[i].name; })
+            .attr('id', function(d, i) { return rhodeisland.objects.counties.geometries[i].name; })
             .attr('d', path)
             .append('title')
-            .text(function(d,i) { return california.objects.counties.geometries[i].name + ' County'; });
+            .text(function(d,i) { return rhodeisland.objects.counties.geometries[i].name + ' County'; });
         svg.append('path')
-            .datum(topojson.mesh(california, california.objects.counties, function(a, b) { return a !== b; }))
+            .datum(topojson.mesh(rhodeisland, rhodeisland.objects.counties, function(a, b) { return a !== b; }))
             .attr('class', 'boundry')
             .attr('d', path);
         
